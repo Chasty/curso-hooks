@@ -1,25 +1,82 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import './App.css';
 import axios from 'axios'
 
-/*const myPromise = new Promise((resolve, reject) => {
-  setTimeout(() => {
-    resolve('foo');
-  }, 300);
-});*/
 
-function miPromesa(numero) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      //throw("que fue error")
-      if(numero %2 == 0) {
-        resolve("Resolve: el numero es par")
-      } else {
-        reject("Reject: el numero es impar")
-      }
-      //reject("From Resolve") //data para catch()
-    }, 2000)
-  })
+//Providers(Padres) Consumers(Hijos) -> StoreProvider (redux) HistoryProvider AuthProvider
+//useContext createContext
+//useReducer
+//useRef
+//useMemo -> optmizacion
+//useCallback -> optimizacion
+
+const themes = {
+  light: {
+    backgroundColor: 'white',
+    color: 'black'
+  },
+  dark: {
+    backgroundColor: 'black',
+    color: 'white'
+  }
+}
+
+
+//1. Se crea el contexto con data inicial
+const ThemeContext = createContext({
+  theme: themes.light,
+  setTheme: () => {}
+})
+
+//2. Se crea el Provider
+
+const MyThemeComponent = () => {
+  const [theme, setTheme] = useState(themes.light)
+  const value = {  theme, setTheme }
+
+  return (
+    <ThemeContext.Provider value={value}>
+      <Toolbar />
+    </ThemeContext.Provider>
+  )
+}
+
+const Toolbar = () => {
+  const { theme, setTheme } = useContext(ThemeContext)
+  return (
+    <div>
+      <ThemedButton />
+      <br/>
+      <br/>
+      <LightButton onClickLightBtn={()=>setTheme(themes.light)} />
+      <DarkButton onClickDarkBtn={()=>setTheme(themes.dark)} />
+    </div>
+  )
+}
+
+const ThemedButton = ()=> {
+  const { theme, setTheme } = useContext(ThemeContext)
+  return (
+    <button style={{ background: theme.backgroundColor, color: theme.color}}>
+      Estoy siendo estilado por el theme context
+    </button>
+  )
+}
+
+const LightButton = ({ onClickLightBtn }) => {
+  return (
+    <button onClick = {onClickLightBtn}>
+      Turn on Light
+    </button>
+  )
+}
+
+const DarkButton = ({ onClickDarkBtn }) => {
+  return (
+    <button onClick={ onClickDarkBtn}>
+      Turn on Dark
+    </button>
+  )
 }
 
 
@@ -43,17 +100,11 @@ function App() {
     
   }, [])
   
+  console.log("APP Component")
 
   return (
     <div className="App">
-      <h1>Data From Promesa</h1>
-      <ul>
-        {data && data.hits.map(item => (
-          <li key={item.objectID}>
-            <a href={item.url}>{item.title}</a>
-          </li>
-        ))}
-      </ul>
+      <MyThemeComponent />
     </div>
   );
 }
