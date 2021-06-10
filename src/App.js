@@ -1,23 +1,48 @@
-import logo from './logo.svg';
+import { useState, useEffect } from 'react';
 import './App.css';
 
+let count = 0
+
+function Counter(){
+  return (<p>{count}</p>)
+}
+
+//React Component
+//1. Inicializacion
+//- constructor() - useState()
+
+//2. Monteo
+//- componenDidMount, componentDerivedProps
+//- componentWillMount -> useEffect()
+
+//3. Actualizacion
+//- componentShouldUpdate, componentDidUpdate -> useEffect()
+
+//4. Desmonteo
+//- componentWillUnMount -> useEffect()
+
 function App() {
+  const [nombre, setNombre] = useState("Lokito")
+  const [apellidos, setApellidos] = useState("Mas Naki")
+
+  function hola(nombre) {
+    //algo complicado
+    console.log("qwdqwd")
+    return (<div>
+      <h1>Hola {nombre}</h1>
+    </div>)
+  }
+
+  console.log("Test")
+  console.log({count})
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>{hola("Wally")}</div>
+      <p>{nombre} {apellidos}</p>
+      <p>{count}</p>
+      <button onClick={()=>{ setApellidos((Math.random()*100).toString()); count++; } }>Test</button>
+      <Counter />
     </div>
   );
 }
