@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from 'react';
+import { useState, useEffect, createContext, useContext, useReducer } from 'react';
 import './App.css';
 import axios from 'axios'
 
@@ -79,6 +79,43 @@ const DarkButton = ({ onClickDarkBtn }) => {
   )
 }
 
+//state inicial {} []
+//actions -> objetos json { type: 'SUMAR' } { type : 'COMPRAR', producto }
+//reducers -> de acuerdo al tipo de accion se cambia el estaado anterior por uno nuevo
+//dispatch({ type: 'SUMAR })
+
+const initialState = { count: 0 }
+
+function counterReducer(previousState = initialState, action) {
+  switch (action.type) {
+    case 'incrementar': 
+      return  {
+        count: previousState.count + 1
+      }
+
+    case 'decrementar': 
+    return {
+      count: previousState.count - 1
+    }
+
+    default: 
+      throw new Error("Que fue error aca")
+  }
+}
+
+//REDUX -> useReducer
+function Counter () {
+  const [state, dispatch] = useReducer(counterReducer, initialState)
+  return (
+    <div style={{ marginTop: 25}}>
+      Count : {state.count}
+      <br />
+      <button onClick={()=> dispatch({ type: 'incrementar' })}>+</button>
+      <button onClick={()=> dispatch({ type: 'decrementar' })}>-</button>
+    </div>
+  )
+}
+
 
 function App() {
   const [data, setData] = useState(null)
@@ -105,6 +142,7 @@ function App() {
   return (
     <div className="App">
       <MyThemeComponent />
+      <Counter />
     </div>
   );
 }
