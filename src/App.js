@@ -2,47 +2,78 @@ import { useState, useEffect } from 'react';
 import './App.css';
 
 
+/*const myPromise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('foo');
+  }, 300);
+});*/
+
+function miPromesa(numero) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      //throw("que fue error")
+      if(numero %2 == 0) {
+        resolve("Resolve: el numero es par")
+      } else {
+        reject("Reject: el numero es impar")
+      }
+      //reject("From Resolve") //data para catch()
+    }, 2000)
+  })
+}
+
 
 function App() {
-  const [nombres, setNombres] = useState("Lokito")
-  const [apellidos, setApellidos] = useState("Mas Naki")
+  const [data, setData] = useState([])
 
-  function hola(nombre) {
-    //algo complicado
-    console.log("qwdqwd")
-    return (<div>
-      <h1>Hola {nombre}</h1>
-    </div>)
-  }
-
-
-  function testFunction(a, b) {
-    return a + b
-  }
+  const [rptaPromise1, setRptaPromise1] = useState("")
+  const [rptaPromise2, setRptaPromise2] = useState("")
+    
 
   useEffect(()=> {
-    //se hacen peticiones a apis, se hacen subcripciones 
-    console.log("Hola desde useEffect []")
-    console.log(testFunction(10, 5))
-  }, []) //componentDidMount
 
-  useEffect(()=> {
-    //dependiendo si el valor cambia haces algo
-    console.log("Hola desde useEffect [apellidos, nombres]")
-    console.log(testFunction(10, 105))
-  }, [apellidos, nombres]) //componentDidUpdate
+    //PROMESAS
+    miPromesa(3).
+              then((data) => {
+                console.log(data)
+                setRptaPromise1(data)
+              }).catch((data)=> {
+                console.log(data)
+                setRptaPromise1(data)
+              }).finally((data)=> {
+                console.log(data)
+              })
 
-  /*useEffect(()=> {
-    console.log("Hola desde useEffect [nombres]")
-    console.log(testFunction(10, 20))
-  }, [nombres]) //componentDidUpdate*/
+    async function pruebaPromesa() {
+      try {
+        const promesa2 = await miPromesa(10)
+        console.log("promesa 2")
+        console.log(promesa2)
+        setRptaPromise2(promesa2)
+      } catch(error) {
+        setRptaPromise2(error)
+        console.log(error)
+      }
+    } 
+
+
+    pruebaPromesa()
+    
+
+    //llamar a la api 
+    /*callApi('https://hn.algolia.com/api/v1/search?query=redux').
+    then((data)=> {
+      setData(data)
+    })*/
+  }, [])
+
 
   return (
     <div className="App">
-      <button onClick={()=>{ setApellidos(("Rosa").toString());} }>Change Apellidos</button>
+      <h1>Data From Promesa</h1>
+      <p>{rptaPromise1}</p>
       <br/>
-      <br/>
-      <button onClick={()=>{ setNombres(("Willy").toString());} }>Change Nombres</button>
+      <p>{rptaPromise2}</p>
     </div>
   );
 }
