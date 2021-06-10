@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-
+import axios from 'axios'
 
 /*const myPromise = new Promise((resolve, reject) => {
   setTimeout(() => {
@@ -24,7 +24,7 @@ function miPromesa(numero) {
 
 
 function App() {
-  const [data, setData] = useState([])
+  const [data, setData] = useState(null)
 
   const [rptaPromise1, setRptaPromise1] = useState("")
   const [rptaPromise2, setRptaPromise2] = useState("")
@@ -61,19 +61,47 @@ function App() {
     
 
     //llamar a la api 
-    /*callApi('https://hn.algolia.com/api/v1/search?query=redux').
-    then((data)=> {
-      setData(data)
-    })*/
-  }, [])
+    fetch('https://hn.algolia.com/api/v1/search?query=redux')
+        .then((response) => response.json())
+        .then((data) => {
+          //console.log(data)
+          //setData(data)
+        })
 
+    async function traerDataPe() {
+      const dataFromApiJSON = await fetch('https://hn.algolia.com/api/v1/search?query=redux')
+      try {
+        const dataReal = await dataFromApiJSON.json()
+        //console.log(dataReal)
+        //setData(dataReal)
+      } catch(error) {
+        console.log(error)
+      }
+    }
+
+    async function searchBook() {
+      const response = await axios('https://hn.algolia.com/api/v1/search?query=java')
+      console.log(response.data)
+      setData(response.data)
+    }
+
+    traerDataPe()
+    searchBook()
+
+    
+  }, [])
+  
 
   return (
     <div className="App">
       <h1>Data From Promesa</h1>
-      <p>{rptaPromise1}</p>
-      <br/>
-      <p>{rptaPromise2}</p>
+      <ul>
+        {data && data.hits.map(item => (
+          <li key={item.objectID}>
+            <a href={item.url}>{item.title}</a>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
